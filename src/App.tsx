@@ -4,7 +4,7 @@ import { ChatPage } from './pages/ChatPage'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/voice-chatbot'>
       <Routes>
         <Route path='/' element={<ChatPage/>} />
       </Routes>
