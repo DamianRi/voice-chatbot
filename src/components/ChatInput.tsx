@@ -1,5 +1,5 @@
 import { Mic } from "@mui/icons-material";
-import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
+import { Box, CircularProgress, IconButton } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
 interface ChatInputProps {
