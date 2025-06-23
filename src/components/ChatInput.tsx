@@ -3,10 +3,11 @@ import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
 interface ChatInputProps {
+  disabled: boolean
   onSendAudio: (audio: Blob) => void;
 }
 
-export function ChatInput({ onSendAudio }: ChatInputProps) {
+export function ChatInput({ disabled, onSendAudio }: ChatInputProps) {
   const [recording, setRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
@@ -60,13 +61,14 @@ export function ChatInput({ onSendAudio }: ChatInputProps) {
       <IconButton
         color="error"
         size="large"
+        disabled={disabled}
         onClick={() => (recording ? stopRecord() : setRecording(true))}
       >
         {recording ? <CircularProgress size={24} /> : <Mic />}
       </IconButton>
-      <Typography variant="caption" color="textSecondary">
+      {/* <Typography variant="caption" color="textSecondary">
         {recording ? "Escuchando..." : "Clic para hablar"}
-      </Typography>
+      </Typography> */}
     </Box>
   );
 }

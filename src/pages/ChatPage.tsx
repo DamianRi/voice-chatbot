@@ -1,10 +1,18 @@
-import { Box, Container, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardMedia,
+  Dialog,
+  Fade,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { ChatInput } from "../components/ChatInput";
-// import { ChatMessage } from "../components/ChatMessage";
 import { useEffect, useRef, useState } from "react";
 // import { v4 as uuid } from "uuid";
 import type { Message } from "../types/Message";
-import AudioPulse from "../components/AudioPulse";
+import { Close } from "@mui/icons-material";
 
 const USER_ID = "9144fa21-f84a-4ed8-874c-76e448121afd";
 const CHAT_SESSION_ID = "chatSessionId";
@@ -12,12 +20,21 @@ const CHAT_SESSION_ID = "chatSessionId";
 const API_SERVICE = "https://207c-189-216-195-64.ngrok-free.app";
 const WEB_SOCKET = "ws://207c-189-216-195-64.ngrok-free.app";
 
+const infograhpyImages = {
+  "estado de cuenta": "/santander-estado-cuenta.jpg",
+  saldo: "/santander-saldo.jpg",
+  clabe: "/santander-clabe.jpg",
+};
+
 export function ChatPage() {
   //   const [audioMessages, setAudioMessages] = useState<Message[]>([]);
   const [textMessage, setTextMessage] = useState<Message>();
   const chatRef = useRef<HTMLDivElement>(null);
   const sessionId = useRef(localStorage.getItem(CHAT_SESSION_ID) || USER_ID);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [showInfography, setShowInfography] = useState(false);
+  const [infographyImage, setInfographyImage] = useState<string>();
+  const [openInfo, setOpenInfo] = useState(false);
 
   function onPlayAudio() {
     setIsPlayingAudio(true);
@@ -35,14 +52,26 @@ export function ChatPage() {
   useEffect(() => {
     const ws = new WebSocket(WEB_SOCKET);
     ws.onopen = () => {
-      console.log("onOpen webSocket");
+      console.log("WebSocket Open");
       ws.send(
         JSON.stringify({ type: "register", sessionId: sessionId.current })
       );
     };
     ws.onmessage = (event) => {
+      console.log("WebSocket Message");
       const response = JSON.parse(event.data) as Message;
       if (response.type === "text") {
+        setShowInfography(false);
+        if (response.content.includes("CLABE")) {
+          setShowInfography(true);
+          setInfographyImage(infograhpyImages.clabe);
+        } else if (response.content.includes("estado de cuenta")) {
+          setShowInfography(true);
+          setInfographyImage(infograhpyImages["estado de cuenta"]);
+        } else if (response.content.includes("saldo")) {
+          setShowInfography(true);
+          setInfographyImage(infograhpyImages.saldo);
+        }
         setTextMessage(response);
       }
       if (response.type === "audio") {
@@ -61,47 +90,6 @@ export function ChatPage() {
     return () => ws.close();
   }, []);
 
-  // Polling connection
-  //   useEffect(() => {
-  //     const interval = setInterval(async () => {
-  //       try {
-  //         const res = await fetch(
-  //           `${API_SERVICE}/api/messages/${sessionId.current}`,
-  //           {
-  //             headers: {
-  //               "ngrok-skip-browser-warning": "true",
-  //             },
-  //           }
-  //         );
-  //         const data = await res.json();
-  //         if (data.messages?.length) {
-  //           const messages: Message[] = data.messages;
-  //           const textMessages = messages.filter((msg) => msg.type === "text");
-  //           const audioMessages = messages.filter((msg) => msg.type === "audio");
-  //           console.log("Text messages ", textMessages);
-  //           console.log("Audio messages ", audioMessages);
-  //           audioMessages.forEach((msg) => {
-  //             const audio = new Audio(msg.content);
-  //             audio.addEventListener("play", onPlayAudio);
-  //             audio.addEventListener("ended", () => onEndAudio(audio));
-  //             audio.play();
-  //           });
-  //           setMessages(() => [...textMessages]);
-  //         }
-  //       } catch (error) {
-  //         console.error("Error al consultar mensajes : ", error);
-  //       }
-  //     }, 3_000);
-  //     return () => clearInterval(interval);
-  //   }, []);
-
-  //   useEffect(() => {
-  //     chatRef.current?.scrollTo({
-  //       top: chatRef.current.scrollHeight,
-  //       behavior: "smooth",
-  //     });
-  //   }, [audioMessages]);
-
   const handleAudio = async (audioBlob: Blob) => {
     const formData = new FormData();
     formData.append("audio", audioBlob, "user-message.webm");
@@ -112,56 +100,176 @@ export function ChatPage() {
       body: formData,
     });
   };
+
+  const handleOpenInfo = () => {
+    setOpenInfo(true);
+  };
+  const handleCloseInfo = () => {
+    setOpenInfo(false);
+  };
   return (
-    <Container
+    <Box
       sx={{
         display: "flex",
         flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100vw",
+        height: "100vh",
+        backgroundImage: "url('santander.png')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
       }}
     >
       <Box
         sx={{
-          maxWidth: 320,
-          minWidth: 320,
-          minHeight: 320,
+          width: "100%",
+          flexGrow: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backdropFilter: "blur(2px)",
+          backgroundColor: "rgba(120, 120, 120, 0.2)",
+          overflow: "hidden",
         }}
       >
-        <Typography marginBottom={1}>Voice Chat</Typography>
+        {/* Voice chat */}
         <Box
-          ref={chatRef}
           sx={{
-            position: "relative",
-            maxHeight: 320,
-            maxWidth: 320,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
             minWidth: 320,
             minHeight: 320,
-            overflowY: "auto",
-            // overflow: 'hidden',
-            border: "1px solid #c0c0c0",
+            maxWidth: 720,
+            width: "fit-content",
+            backgroundColor: "white",
             borderRadius: 4,
-            // p: 1,
-            marginBottom: 1,
-            backgroundImage: 'url("ejecutivoSantander.png")',
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
+            padding: 2,
           }}
         >
-          {/* {messages.map((msg, index) => (
-          <ChatMessage key={index} message={msg}/>
-        ))} */}
-          <AudioPulse isPlaying={isPlayingAudio} />
+          <Typography marginBottom={1}>Voice Chat</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              gap: 1,
+              transition: "width 0.5s ease",
+            }}
+            width={showInfography ? "fit-content" : 320}
+          >
+            {/* Botcito */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "flex-end",
+                maxHeight: 320,
+                maxWidth: 320,
+                minWidth: 320,
+                minHeight: 320,
+                overflowY: "auto",
+                // overflow: 'hidden',
+                // border: "1px solid #c0c0c0",
+                borderRadius: 4,
+                // p: 1,
+                marginBottom: 1,
+                backgroundImage: 'url("ejecutivoSantander.png")',
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                padding: 2,
+                boxSizing: "border-box",
+              }}
+            >
+              {/* {messages.map((msg, index) => (
+                <ChatMessage key={index} message={msg}/>
+                ))} */}
+              {textMessage?.content && (
+                <Typography
+                  variant="body1"
+                  fontSize={12}
+                  lineHeight={1}
+                  color="white"
+                  textAlign="justify"
+                  padding={0.5}
+                  borderRadius={1}
+                  sx={{
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  }}
+                >
+                  {textMessage?.content}
+                </Typography>
+              )}
+            </Box>
+            {/* Infografías */}
+            <Fade in={showInfography} mountOnEnter unmountOnExit timeout={500}>
+              <Box
+                ref={chatRef}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  //   maxHeight: 120, // Modo columna
+                  maxHeight: 320, // Modo columna
+                  maxWidth: 320,
+                  //   minWidth: 320,
+                  minHeight: 96,
+                  overflowY: "auto",
+                  border: "1px solid #c0c0c0",
+                  borderRadius: 4,
+                  marginBottom: 1,
+                  padding: 2,
+                  boxSizing: "border-box",
+                }}
+              >
+                <Card sx={{ width: 96 }} onClick={handleOpenInfo}>
+                  <CardActionArea>
+                    <CardMedia
+                      component="img"
+                      image={infographyImage}
+                      alt="Infografía del mensaje"
+                      height="auto"
+                    />
+                  </CardActionArea>
+                </Card>
+              </Box>
+            </Fade>
+          </Box>
+          <Box display={"flex"} alignItems={"baseline"} gap={1}>
+            <ChatInput
+              disabled={isPlayingAudio}
+              onSendAudio={handleAudio}
+            ></ChatInput>
+            {showInfography && (
+              <IconButton
+                size="large"
+                color="error"
+                title="Cerrar infografía"
+                onClick={() => setShowInfography(!showInfography)}
+              >
+                <Close />
+              </IconButton>
+            )}
+          </Box>
         </Box>
-        <Typography
-          variant="body2"
-          fontSize={12}
-          lineHeight={1}
-          color="textSecondary"
-        >
-          {textMessage?.content}
-        </Typography>
-        <ChatInput onSendAudio={handleAudio}></ChatInput>
+
+        {/* Modal para mostrar infografías */}
+        <Dialog open={openInfo} onClose={handleCloseInfo}>
+          <Box>
+            <img
+              src={infographyImage}
+              alt="Infografía del mensaje"
+              style={{
+                width: "100%",
+                height: "auto",
+                borderRadius: 2,
+                boxShadow: "0 0 16px rgba(0, 0, 0, 0.5)",
+              }}
+            />
+          </Box>
+        </Dialog>
       </Box>
-    </Container>
+    </Box>
   );
 }
