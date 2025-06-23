@@ -18,12 +18,12 @@ const USER_ID = uuid();
 const CHAT_SESSION_ID = "chatSessionId";
 // const API_SERVICE = 'http://localhost:3001'
 const API_SERVICE = "https://207c-189-216-195-64.ngrok-free.app";
-const WEB_SOCKET = "ws://207c-189-216-195-64.ngrok-free.app";
+const WEB_SOCKET = "wss://207c-189-216-195-64.ngrok-free.app";
 
 const infograhpyImages = {
-  "estado de cuenta": "/santander-estado-cuenta.jpg",
-  saldo: "/santander-saldo.jpg",
-  clabe: "/santander-clabe.jpg",
+  "estado de cuenta": "/voice-chatbot/santander-estado-cuenta.jpg",
+  saldo: "/voice-chatbot/santander-saldo.jpg",
+  clabe: "/voice-chatbot/santander-clabe.jpg",
 };
 
 export function ChatPage() {
