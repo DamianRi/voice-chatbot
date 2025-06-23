@@ -1,6 +1,7 @@
-import { Mic } from "@mui/icons-material";
+import { Mic, MicOff } from "@mui/icons-material";
 import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import AudioPulse from "./AudioPulse";
 
 interface ChatInputProps {
   disabled: boolean
@@ -78,14 +79,20 @@ export function ChatInput({ disabled, onSendAudio }: ChatInputProps) {
       justifyContent="center"
       alignItems="center"
     >
-      <IconButton
-        color="error"
-        size="large"
-        disabled={disabled || showPermissionError}
-        onClick={() => (recording ? stopRecord() : setRecording(true))}
-      >
-        {recording ? <CircularProgress size={24} /> : <Mic />}
-      </IconButton>
+      <Box position={'relative'} display={'flex'}>
+        { recording && <AudioPulse isPlaying />}
+        <IconButton
+          color="error"
+          size="large"
+          disabled={disabled || showPermissionError}
+          onClick={() => (recording ? stopRecord() : setRecording(true))}
+          sx={{
+            border: '1px solid'
+          }}
+        >
+          {recording ? <Mic /> : <MicOff />}
+        </IconButton>
+      </Box>
       {/* <Typography variant="caption" color="textSecondary">
         {recording ? "Escuchando..." : "Clic para hablar"}
       </Typography> */}

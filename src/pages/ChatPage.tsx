@@ -31,7 +31,7 @@ export function ChatPage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const sessionId = useRef(localStorage.getItem(CHAT_SESSION_ID) || USER_ID);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [showInfography, setShowInfography] = useState(false);
+  const [showInfography, setShowInfography] = useState(true);
   const [infographyImage, setInfographyImage] = useState<string>();
   const [openInfo, setOpenInfo] = useState(false);
 
@@ -201,8 +201,10 @@ export function ChatPage() {
                 ref={chatRef}
                 sx={{
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
+                  gap: 1,
                   //   maxHeight: 120, // Modo columna
                   maxHeight: 320, // Modo columna
                   maxWidth: 320,
@@ -226,6 +228,17 @@ export function ChatPage() {
                     />
                   </CardActionArea>
                 </Card>
+                <IconButton
+                  size="small"
+                  color="error"
+                  title="Cerrar infografía"
+                  sx={{
+                    border: "1px solid",
+                  }}
+                  onClick={() => setShowInfography(!showInfography)}
+                >
+                  <Close />
+                </IconButton>
               </Box>
             </Fade>
           </Box>
@@ -234,16 +247,6 @@ export function ChatPage() {
               disabled={isPlayingAudio}
               onSendAudio={handleAudio}
             ></ChatInput>
-            {showInfography && (
-              <IconButton
-                size="large"
-                color="error"
-                title="Cerrar infografía"
-                onClick={() => setShowInfography(!showInfography)}
-              >
-                <Close />
-              </IconButton>
-            )}
           </Box>
         </Box>
 
