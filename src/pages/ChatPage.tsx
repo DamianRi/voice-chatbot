@@ -31,7 +31,7 @@ export function ChatPage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const sessionId = useRef(localStorage.getItem(CHAT_SESSION_ID) || USER_ID);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [showInfography, setShowInfography] = useState(true);
+  const [showInfography, setShowInfography] = useState(false);
   const [infographyImage, setInfographyImage] = useState<string>();
   const [openInfo, setOpenInfo] = useState(false);
 
