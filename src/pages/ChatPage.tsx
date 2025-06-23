@@ -10,11 +10,11 @@ import {
 } from "@mui/material";
 import { ChatInput } from "../components/ChatInput";
 import { useEffect, useRef, useState } from "react";
-// import { v4 as uuid } from "uuid";
+import { v4 as uuid } from "uuid";
 import type { Message } from "../types/Message";
 import { Close } from "@mui/icons-material";
 
-const USER_ID = "9144fa21-f84a-4ed8-874c-76e448121afd";
+const USER_ID = uuid();
 const CHAT_SESSION_ID = "chatSessionId";
 // const API_SERVICE = 'http://localhost:3001'
 const API_SERVICE = "https://207c-189-216-195-64.ngrok-free.app";
@@ -27,7 +27,6 @@ const infograhpyImages = {
 };
 
 export function ChatPage() {
-  //   const [audioMessages, setAudioMessages] = useState<Message[]>([]);
   const [textMessage, setTextMessage] = useState<Message>();
   const chatRef = useRef<HTMLDivElement>(null);
   const sessionId = useRef(localStorage.getItem(CHAT_SESSION_ID) || USER_ID);
@@ -169,10 +168,7 @@ export function ChatPage() {
                 minWidth: 320,
                 minHeight: 320,
                 overflowY: "auto",
-                // overflow: 'hidden',
-                // border: "1px solid #c0c0c0",
                 borderRadius: 4,
-                // p: 1,
                 marginBottom: 1,
                 backgroundImage: 'url("ejecutivoSantander.png")',
                 backgroundSize: "cover",
@@ -182,9 +178,6 @@ export function ChatPage() {
                 boxSizing: "border-box",
               }}
             >
-              {/* {messages.map((msg, index) => (
-                <ChatMessage key={index} message={msg}/>
-                ))} */}
               {textMessage?.content && (
                 <Typography
                   variant="body1"
