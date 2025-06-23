@@ -1,5 +1,5 @@
 import { Mic, MicOff } from "@mui/icons-material";
-import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import AudioPulse from "./AudioPulse";
 
