@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type { Message } from "../types/Message";
 import { Close } from "@mui/icons-material";
+import VideoBackground from "../components/VideoBackground";
 
 const USER_ID = uuid();
 const CHAT_SESSION_ID = "chatSessionId";
@@ -161,6 +162,7 @@ export function ChatPage() {
             {/* Botcito */}
             <Box
               sx={{
+                position: "relative",
                 display: "flex",
                 alignItems: "flex-end",
                 maxHeight: 320,
@@ -170,29 +172,38 @@ export function ChatPage() {
                 overflowY: "auto",
                 borderRadius: 4,
                 marginBottom: 1,
-                backgroundImage: 'url("ejecutivoSantander.png")',
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
+                // backgroundImage: 'url("ejecutivoSantander.png")',
+                // backgroundSize: "cover",
+                // backgroundRepeat: "no-repeat",
+                // backgroundPosition: "center",
                 padding: 2,
                 boxSizing: "border-box",
               }}
             >
+              <VideoBackground isPlaying={isPlayingAudio} />
               {textMessage?.content && (
-                <Typography
-                  variant="body1"
-                  fontSize={12}
-                  lineHeight={1}
-                  color="white"
-                  textAlign="justify"
-                  padding={0.5}
-                  borderRadius={1}
+                <Box
                   sx={{
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    position: "relative",
+                    zIndex: 1,
+                    width: "100%",
                   }}
                 >
-                  {textMessage?.content}
-                </Typography>
+                  <Typography
+                    variant="body1"
+                    fontSize={12}
+                    lineHeight={1}
+                    color="white"
+                    textAlign="justify"
+                    padding={0.5}
+                    borderRadius={1}
+                    sx={{
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    }}
+                  >
+                    {textMessage?.content}
+                  </Typography>
+                </Box>
               )}
             </Box>
             {/* Infografías */}
