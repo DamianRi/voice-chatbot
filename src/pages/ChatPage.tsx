@@ -14,12 +14,11 @@ import { v4 as uuid } from "uuid";
 import type { Message } from "../types/Message";
 import { Close } from "@mui/icons-material";
 import VideoBackground from "../components/VideoBackground";
+import CONFIG from "../config/setup";
+("../config/setup");
 
 const USER_ID = uuid();
 const CHAT_SESSION_ID = "chatSessionId";
-// const API_SERVICE = 'http://localhost:3001'
-const API_SERVICE = "https://207c-189-216-195-64.ngrok-free.app";
-const WEB_SOCKET = "wss://207c-189-216-195-64.ngrok-free.app";
 
 const infograhpyImages = {
   "estado de cuenta": "/voice-chatbot/santander-estado-cuenta.jpg",
@@ -50,7 +49,7 @@ export function ChatPage() {
   }, []);
 
   useEffect(() => {
-    const ws = new WebSocket(WEB_SOCKET);
+    const ws = new WebSocket(CONFIG.WEBSOCKET_URL);
     ws.onopen = () => {
       console.log("WebSocket Open");
       ws.send(
@@ -95,7 +94,7 @@ export function ChatPage() {
     formData.append("audio", audioBlob, "user-message.webm");
     formData.append("sessionId", sessionId.current);
 
-    await fetch(`${API_SERVICE}/api/chat-audio`, {
+    await fetch(`${CONFIG.WEBHOOK_URL}/api/chat-audio`, {
       method: "POST",
       body: formData,
     });
